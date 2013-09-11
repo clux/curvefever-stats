@@ -1,0 +1,27 @@
+{
+  "name": "curvefever-stats",
+  "private": true,
+  "description": "A statistics library and match maker for the curvefever game",
+  "author": "Eirik Albrigtsen <analsandblaster@gmail.com>",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/clux/curvefever-stats.git"
+  },
+  "keywords": [],
+  "main": "curve.js",
+  "scripts": {
+    "start": "node irc.js"
+  },
+  "dependencies": {
+    "gu": "~0.0.0",
+    "subset": "~0.1.4",
+    "request": "~2.27.0",
+    "cheerio": "~0.12.2",
+    "async": "~0.2.9"
+  },
+  "bugs": {
+    "url": "http://github.com/clux/curvefever-stats/issues"
+  },
+  "license": "MIT"
+}

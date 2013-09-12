@@ -1,26 +1,26 @@
 var curve = require('../');
 
-module.exports = function (gu) {
-  
-  // join/leave code
-  var joinReg, leaveReg;
-  (function () {
-    var positives = [
-      'yes+z*', 'yu+p+', 'ye+r*p?', 'ya+r*', 'ye*a*h*',
-      'aye', 'ja+', 'si', 'oui', 'okay', 'o?k+',
-      'a?l?right', 'sure', 'fine', 'jawohl'
-    ];
-    var negatives = [
-      'nein?', 'na+[hw]*', 'nowa[yi]?', 'no?p?e?', 'never', 'later'
-    ];
-    var straggler = '\\w{0,5}'; // allow some stray characters as well
-    var endForReg = straggler + '(?:\\s+fr?o[rm]?\\s*(\\w*))?'; // for|from|fo player
-    joinReg = new RegExp('^(' + positives.join('|') + ')' + endForReg, 'i');
-    leaveReg = new RegExp('^(' + negatives.join('|') + ')' + endForReg, 'i');
-  }());
+// join/leave code
+var joinReg, leaveReg;
+(function () {
+  var positives = [
+    'yes+z*', 'yu+p+', 'ye+r*p?', 'ya+r*', 'ye*a*h*',
+    'aye', 'ja+', 'si', 'oui', 'okay', 'o?k+',
+    'a?l?right', 'sure', 'fine', 'jawohl'
+  ];
+  var negatives = [
+    'nein?', 'na+[hw]*', 'nowa[yi]?', 'no?p?e?', 'never', 'later'
+  ];
+  var straggler = '\\w{0,5}'; // allow some stray characters as well
+  var endForReg = straggler + '(?:\\s+fr?o[rm]?\\s*(\\w*))?'; // for|from|fo player
+  joinReg = new RegExp('^(' + positives.join('|') + ')' + endForReg, 'i');
+  leaveReg = new RegExp('^(' + negatives.join('|') + ')' + endForReg, 'i');
+}());
 
-  var added = []; // currently signed up people
-  var limit = 6; // currentlimit
+var added = []; // currently signed up people
+var limit = 6; // currentlimit
+
+module.exports = function (gu) {
 
   gu.on(joinReg, function (sentiment, participant, from) {
     var guy = participant || from;
@@ -35,8 +35,10 @@ module.exports = function (gu) {
     }
     added.push(guy);
     if (added.length === 1) {
+      var link = 'http://curvefever.com/play2.php';
+      var room = 'langley:telepresence';
       gu.say('curve game starting soon - "curve: yes" to join');
-      gu.say('Register on: ' + 'http://curvefever.com/play2.php - then join langley:telepresence');
+      gu.say('Register on: ' + link + ' - then join: ' + room);
     }
     gu.say(guy + ' joined (' + added.length + ' / ' + limit + ')');
     if (added.length === limit) {

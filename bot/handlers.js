@@ -1,4 +1,4 @@
-var curve = require('./curve')
+var curve = require('../');
 
 module.exports = function (gu) {
 
@@ -8,7 +8,6 @@ module.exports = function (gu) {
   gu.on(/^buzz/, function () {
     gu.say(curve.getPlayers().join(' '));
   });
-
 
   gu.on(/^check (.*)$/, function (aliases) {
     aliases = aliases.trim().split(" ").slice(0, 8); // max 8 at a time
@@ -55,9 +54,10 @@ module.exports = function (gu) {
     var negatives = [
       'nein?', 'na+[hw]*', 'nowa[yi]?', 'no?p?e?', 'never', 'later'
     ];
-    var endForReg = '(?\:\\s+fr?o[rm]?\\s*(\\w*))?'; // for|from|fo player
-    joinReg = new RegExp('^(' + positives.join('|') + ')\\w*' + endForReg, 'i');
-    leaveReg = new RegExp('^(' + negatives.join('|') + ')\\w*' + endForReg, 'i');
+    var straggler = '\\w{0,5}'; // allow some stray characters as well
+    var endForReg = straggler + '(?:\\s+fr?o[rm]?\\s*(\\w*))?'; // for|from|fo player
+    joinReg = new RegExp('^(' + positives.join('|') + ')' + endForReg, 'i');
+    leaveReg = new RegExp('^(' + negatives.join('|') + ')' + endForReg, 'i');
   }());
 
   var added = []; // currently signed up people
@@ -76,9 +76,8 @@ module.exports = function (gu) {
     }
     added.push(guy);
     if (added.length === 1) {
-      gu.say('curve game starting soon - "curve: k" to join');
-      gu.say('quick link: ' + 'http://curvefever.com/play2.php');
-      gu.say('Room "langley", password "telepresence"');
+      gu.say('curve game starting soon - "curve: yes" to join');
+      gu.say('Register on: ' + 'http://curvefever.com/play2.php - then join langley:telepresence');
     }
     gu.say(guy + ' joined (' + added.length + ' / ' + limit + ')');
     if (added.length === limit) {

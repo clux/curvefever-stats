@@ -34,6 +34,9 @@ TODO: perhaps generalize this
 
 ```bash
 $ git clone git@github.com:clux/curvefever-stats.git
+$ cd curvefever-stats
+$ npm install
+$ npm start
 ```
 
 ## License

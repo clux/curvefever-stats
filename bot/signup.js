@@ -14,7 +14,7 @@ var room = cfg.room;
 var joinReg, leaveReg;
 (function () {
   var positives = [
-    'ye+s*h*z*i?r?', 'yu+p*[sz]*', 'ya+r*h*', 'ye+a*h*r*h*',
+    'ye*s*h*z*i?r?', 'yu+p*[sz]*', 'ya+r*h*', 'ye+a*h*r*h*',
     'a+y+e*', 'j+a*', 'si', 'oui', 'okay', 'o?k+',
     'a?l?right', 'sure', 'fine', 'jawohl'
   ];

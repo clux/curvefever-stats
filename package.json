@@ -1,7 +1,7 @@
 {
   "name": "curvefever-stats",
   "private": true,
-  "description": "A statistics library and match maker for the curvefever game",
+  "description": "A statistics library and match maker bt for the curvefever game",
   "author": "Eirik Albrigtsen <analsandblaster@gmail.com>",
   "version": "0.0.0",
   "repository": {
@@ -14,10 +14,11 @@
     "start": "node irc.js"
   },
   "dependencies": {
-    "gu": "~0.0.0",
+    "gu": "~0.0.2",
     "subset": "~0.1.4",
     "request": "~2.27.0",
     "cheerio": "~0.12.2",
+    "confortable": "~0.2.1",
     "async": "~0.2.9"
   },
   "bugs": {

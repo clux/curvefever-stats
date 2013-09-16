@@ -1,9 +1,23 @@
 var curve = require('../');
+var cfgPath = require('confortable')('.curvestat.json', process.cwd());
+var cfg = require(cfgPath);
+var admins = cfg.admins || [];
+Object.keys(cfg.players).forEach(function (alias) {
+  curve.addPlayer(alias, cfg.players[alias]);
+});
 
 module.exports = function (gu) {
 
-  gu.on(/^register (\w*) (\w*)$/, curve.addPlayer);
-  gu.on(/^unregister (\w*)/, curve.removePlayer);
+  gu.on(/^register (\w*) (\w*)$/, function (alias, curveName, from) {
+    if (!admins.length || admins.indexOf(from) >= 0) {
+      curve.addPlayer(alias, curveName)
+    }
+  });
+  gu.on(/^unregister (\w*)/, function (alias, from) {
+    if (!admins.length || admins.indexOf(from) >= 0) {
+      curve.removePlayer(alias);
+    }
+  });
 
   gu.on(/^buzz/, function () {
     gu.say(curve.getPlayers().join(' '));

@@ -1,15 +1,26 @@
 var curve = require('../');
+var cfgPath = require('confortable')('.curvestat.json', process.cwd());
+var cfg = require(cfgPath);
+
+var link = 'http://curvefever.com/play2.php';
+var room = cfg.room;
+
+// TODO: decide on whether to nevere persist and have config declare
+// or to not declare in config and use curve un/register player curvenick
+// former => can't properly use register because it isn't saved
+// latter better for module users
 
 // join/leave code
 var joinReg, leaveReg;
 (function () {
   var positives = [
-    'yes+z*', 'yu+p+', 'ye+r*p?', 'ya+r*', 'ye*a*h*',
-    'aye', 'ja+', 'si', 'oui', 'okay', 'o?k+',
+    'ye+s*h*z*i?r?', 'yu+p*[sz]*', 'ya+r*h*', 'ye+a*h*r*h*',
+    'a+y+e*', 'j+a*', 'si', 'oui', 'okay', 'o?k+',
     'a?l?right', 'sure', 'fine', 'jawohl'
   ];
   var negatives = [
-    'nein?', 'na+[hw]*', 'nowa[yi]?', 'no?p?e?', 'never', 'later'
+    'ne+i+n*', 'na+[hw]*', 'n[ae]+[yi]+h*', 'n[uœ]+h*',
+    'no?p?e?', 'nowa[yi]?', 'never', 'later'
   ];
   var straggler = '\\w{0,5}'; // allow some stray characters as well
   var endForReg = straggler + '(?:\\s+fr?o[rm]?\\s*(\\w*))?'; // for|from|fo player
@@ -17,17 +28,17 @@ var joinReg, leaveReg;
   leaveReg = new RegExp('^(' + negatives.join('|') + ')' + endForReg, 'i');
 }());
 
-var added = []; // currently signed up people
-var limit = 6; // currentlimit
+// reload state from injected object in case of hot code reload
+var added = [];  // currently signed up people
+var limit = 6;   // current limit
 
 module.exports = function (gu) {
 
   gu.on(joinReg, function (sentiment, participant, from) {
     var guy = participant || from;
-    console.log('yes for', guy);
     if (added.length === limit) {
       var hint = limit < 8 ? ' - say "limit 8" to raise the limit' : '';
-      gu.say('Game is full' + hint);
+      gu.say('game is full' + hint);
       return;
     }
     if (added.indexOf(guy) >= 0) {
@@ -35,10 +46,8 @@ module.exports = function (gu) {
     }
     added.push(guy);
     if (added.length === 1) {
-      var link = 'http://curvefever.com/play2.php';
-      var room = 'langley:telepresence';
-      gu.say('curve game starting soon - "curve: yes" to join');
-      gu.say('Register on: ' + link + ' - then join: ' + room);
+      gu.say('new curve game starting soon - "curve: yes" to sign up');
+      gu.say('register on: ' + link + ' - then join: ' + room);
     }
     gu.say(guy + ' joined (' + added.length + ' / ' + limit + ')');
     if (added.length === limit) {
@@ -48,7 +57,6 @@ module.exports = function (gu) {
 
   gu.on(leaveReg, function (sentiment, participant, from) {
     var guy = participant || from;
-    console.log('no for', guy);
     if (added.indexOf(guy) >= 0) {
       added.splice(added.indexOf(guy), 1);
       gu.say(guy + ' left (' + added.length + ' / ' + limit + ')');
@@ -61,16 +69,20 @@ module.exports = function (gu) {
       if (added.length >= 4) {
         var res = curve.fairestMatch(added);
         if ('string' === typeof res) {
-          gu.say('Not generating teams:' + res);
+          gu.say('Not generating teams: ' + res);
         }
         else {
           var r = res[0];
-          gu.say('If teams: ' + r.teams + ' (difference ' + r.diff + ')');
+          gu.say('if teams: ' + r.teams + ' (difference ' + r.diff + ')');
         }
       }
     }
   };
   gu.on(/^gogo/, gogoFn);
+
+  gu.on(/^where|^link/, function () {
+    gu.say('register on: ' + link + ' - then join: ' + room);
+  });
 
   gu.on(/^limit (\d)/, function (n) {
     limit = Math.max(added.length, n | 0);

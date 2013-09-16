@@ -15,7 +15,7 @@ var metric = function (score) {
 };
 
 var saveScores = function () {
-  fs.writeFileSync('./scores.json', league + '');
+  fs.writeFile('./scores.json', league + '');
 };
 
 exports.getPlayers = function () {
@@ -49,8 +49,10 @@ exports.refresh = function (normalAliases, cb) {
 };
 
 exports.addPlayer = function (name, alias) {
-  league.add(name, alias, metric()); // blank score
-  exports.refresh([name], saveScores); // until refresh finishes
+  if (league.aliases[name] !== alias) {
+    league.add(name, alias, metric()); // blank score
+    exports.refresh([name], saveScores); // until refresh finishes
+  }
 };
 
 exports.removePlayer = function (name) {

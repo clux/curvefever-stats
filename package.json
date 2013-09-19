@@ -14,12 +14,15 @@
     "start": "node irc.js"
   },
   "dependencies": {
-    "gu": "~0.0.2",
+    "gu": "~0.1.0",
     "subset": "~0.1.4",
     "request": "~2.27.0",
     "cheerio": "~0.12.2",
     "confortable": "~0.2.1",
     "async": "~0.2.9"
+  },
+  "optionalDependencies": {
+    "irc-stream": "~0.0.1"
   },
   "bugs": {
     "url": "http://github.com/clux/curvefever-stats/issues"

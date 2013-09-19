@@ -34,11 +34,11 @@ var limit = 6;   // current limit
 
 module.exports = function (gu) {
 
-  gu.on(joinReg, function (sentiment, participant, from) {
-    var guy = participant || from;
+  gu.handle(joinReg, function (sentiment, participant, say, name) {
+    var guy = participant || name;
     if (added.length === limit) {
       var hint = limit < 8 ? ' - say "limit 8" to raise the limit' : '';
-      gu.say('game is full' + hint);
+      say('game is full' + hint);
       return;
     }
     if (added.indexOf(guy) >= 0) {
@@ -46,56 +46,56 @@ module.exports = function (gu) {
     }
     added.push(guy);
     if (added.length === 1) {
-      gu.say('new curve game starting soon - "curve: yes" to sign up');
-      gu.say('register on: ' + link + ' - then join: ' + room);
+      say('new curve game starting soon - "curve: yes" to sign up');
+      say('register on: ' + link + ' - then join: ' + room);
     }
-    gu.say(guy + ' joined (' + added.length + ' / ' + limit + ')');
+    say(guy + ' joined (' + added.length + ' / ' + limit + ')');
     if (added.length === limit) {
-      gogoFn();
+      gogoFn(say);
     }
   });
 
-  gu.on(leaveReg, function (sentiment, participant, from) {
-    var guy = participant || from;
+  gu.handle(leaveReg, function (sentiment, participant, say, name) {
+    var guy = participant || name;
     if (added.indexOf(guy) >= 0) {
       added.splice(added.indexOf(guy), 1);
-      gu.say(guy + ' left (' + added.length + ' / ' + limit + ')');
+      say(guy + ' left (' + added.length + ' / ' + limit + ')');
     }
   });
 
-  var gogoFn = function () {
+  var gogoFn = function (say) {
     if (added.length) {
-      gu.say('curve game starting - ' + added.join(', ') + ' - Go go go!');
+      say('curve game starting - ' + added.join(', ') + ' - Go go go!');
       if (added.length >= 4) {
         var res = curve.fairestMatch(added);
         if ('string' === typeof res) {
-          gu.say('Not generating teams: ' + res);
+          say('Not generating teams: ' + res);
         }
         else {
           var r = res[0];
-          gu.say('if teams: ' + r.teams + ' (difference ' + r.diff + ')');
+          say('if teams: ' + r.teams + ' (difference ' + r.diff + ')');
         }
       }
     }
   };
-  gu.on(/^gogo/, gogoFn);
+  gu.handle(/^gogo/, gogoFn);
 
-  gu.on(/^where|^link/, function () {
-    gu.say('register on: ' + link + ' - then join: ' + room);
+  gu.handle(/^where|^link/, function (say) {
+    say('register on: ' + link + ' - then join: ' + room);
   });
 
-  gu.on(/^limit (\d)/, function (n) {
+  gu.handle(/^limit (\d)/, function (n, say) {
     limit = Math.max(added.length, n | 0);
-    gu.say(added.length + ' / ' + limit);
+    say(added.length + ' / ' + limit);
     if (limit === added.length) {
-      gogoFn();
+      gogoFn(say);
     }
   });
 
-  gu.on(/^end/, function () {
+  gu.handle(/^end/, function (say) {
     // TODO: could scrape for last result?
-    gu.say('game over - "curve: k" to start a new one');
-    //curve.refresh(null, function () {}); // TODO: only refresh added
+    say('game over - "curve: k" to start a new one');
+    curve.refresh(added, function () {});
     added = [];
     limit = 6;
   });

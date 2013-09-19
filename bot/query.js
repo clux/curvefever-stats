@@ -8,58 +8,59 @@ Object.keys(cfg.players).forEach(function (alias) {
 
 module.exports = function (gu) {
 
-  gu.on(/^register (\w*) (\w*)$/, function (alias, curveName, from) {
-    if (!admins.length || admins.indexOf(from) >= 0) {
-      curve.addPlayer(alias, curveName)
+  gu.handle(/^register (\w*) (\w*)$/, function (alias, curveName, say, name) {
+    if (!admins.length || admins.indexOf(name) >= 0) {
+      curve.addPlayer(alias, curveName);
     }
   });
-  gu.on(/^unregister (\w*)/, function (alias, from) {
-    if (!admins.length || admins.indexOf(from) >= 0) {
+  gu.handle(/^unregister (\w*)/, function (alias, say, name) {
+    if (!admins.length || admins.indexOf(name) >= 0) {
       curve.removePlayer(alias);
     }
   });
 
-  gu.on(/^buzz/, function () {
-    gu.say(curve.getPlayers().join(' '));
+  gu.handle(/^buzz/, function (say) {
+    say(curve.getPlayers().join(' '));
   });
 
-  gu.on(/^check (.*)$/, function (aliases) {
+  gu.handle(/^check (.*)$/, function (aliases, say) {
     aliases = aliases.trim().split(" ").slice(0, 8); // max 8 at a time
     curve.refresh(aliases, function (err, objs) {
       if (err) {
         return console.error(err, objs);
       }
       objs.forEach(function (o) {
-        gu.say(o.name + ': ' + o.rank);
+        say(o.name + ': ' + o.rank);
       });
     });
   });
 
-  gu.on(/^top (\d*)$/, function (n) {
+  gu.handle(/^top (\d*)$/, function (n, say) {
     var top = curve.getTop(Math.min(n | 0, 15));
     top.forEach(function (p, i) {
-      gu.say((i+1) + '. ' + p.name + ' (' + p.score + ')');
+      say((i+1) + '. ' + p.name + ' (' + p.score + ')');
     });
   });
 
-  gu.on(/^teams (\d*) (.*)/, function (num, aliases) {
+  gu.handle(/^teams (\d*) (.*)/, function (num, aliases, say) {
     num = Math.max(Math.min(num | 0, 3), 1);
     aliases = aliases.trim().split(" ");
     var res = curve.fairestMatch(aliases);
     if ('string' === typeof res) {
-      gu.say(res); // error message
+      say(res); // error message
     }
     else {
       res.slice(0, num).forEach(function (obj) {
-        gu.say(obj.teams + ' (difference ' + obj.diff + ')');
+        say(obj.teams + ' (difference ' + obj.diff + ')');
       });
     }
   });
 
-  gu.on(/^help/, function () {
-    gu.say('Create or join a game with "curve k", to sign up for someone else "curve yes for nick"');
-    gu.say('"curve gogo" to generate, and "curve end" to clear state');
-    gu.say('Extras: "buzz", "top n", "check nick1 ..", "teams n nick1 .."');
+
+  gu.handle(/^help/, function (say) {
+    say('Create or join a game with "yes", to sign up for someone else "yes for nick"');
+    say('"gogo" to generate, and "end" to clear state');
+    say('Extras: "buzz", "top n", "check nick1 ..", "teams n nick1 .."');
   });
 
 };

@@ -2,18 +2,11 @@ var request = require('request')
   , cheerio = require('cheerio');
 
 
-module.exports = function (player, cb) {
+exports.user = function (player, cb) {
   request("http://curvefever.com/users/" + player, function (err, resp, body) {
     if (!err && resp.statusCode === 200) {
       var $ = cheerio.load(body);
       var stats = $('.profile dd');
-      var lastMatch = $(stats[3]).find('tbody tr td a');
-      if (lastMatch) {
-        var matchUrl = lastMatch.first().attr('href');
-
-      }
-      console.log(lastMatch);
-
       cb(null, {
         name: player,
         ffa: $(stats[1]).text().slice(0, 4) | 0,
@@ -27,7 +20,7 @@ module.exports = function (player, cb) {
 
 };
 
-var findLastMatchId = function (player, cb) {
+exports.findLastMatchId = function (player, cb) {
   request("http://curvefever.com/users/" + player, function (err, resp, body) {
     if (!err && resp.statusCode === 200) {
       var $ = cheerio.load(body);
@@ -49,7 +42,7 @@ var findLastMatchId = function (player, cb) {
   });
 };
 
-var getLastMatch = function (id, cb) {
+exports.getLastMatch = function (id, cb) {
   request('http://curvefever.com/achtung/match/' + id, function (err, resp, body) {
     if (!err && resp.statusCode === 200) {
       var $ = cheerio.load(body);
@@ -84,10 +77,3 @@ var getLastMatch = function (id, cb) {
     }
   });
 };
-
-if (module === require.main) {
-  //module.exports('ealbrigt', console.log);
-  //findLastMatchId('ealbrigt', console.log)
-  getLastMatch(9496358, console.log); // team game
-  //getLastMatch(9469502, console.log); // ffa gam
-}

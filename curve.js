@@ -26,7 +26,7 @@ exports.getPlayers = function () {
 exports.refresh = function (normalAliases, cb) {
   var users = league.convert(normalAliases);
   var fns = users.map(function (u) {
-    return scraper.bind(null, u);
+    return scraper.user.bind(null, u);
   });
   async.parallel(fns, function (err, datas) {
     if (err) {

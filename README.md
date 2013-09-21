@@ -26,6 +26,7 @@ curve.fairestMatch(['ob', 'ea', 'uu', 'aj']); // a few of my friends' accounts r
 
 - the curve stats are scraped of "curvefever.com/user/" and cached in `scores.json` - improve
 - no option to use a different metric
+- publish to npm
 
 ## Installation
 

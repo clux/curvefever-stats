@@ -1,6 +1,6 @@
 var tap = require('tap')
   , test = tap.test
-  , scrape = require('../scraper')
+  , scrape = require('../scraper');
 
 test("user stats", function (t) {
   t.plan(3);
@@ -12,7 +12,7 @@ test("user stats", function (t) {
 });
 
 test("last match id", function (t) {
-  t.plan(1)
+  t.plan(1);
   scrape.findLastMatchId('ealbrigt', function (err, data) {
     t.ok(data > 9496350, 'last game i played had this id');
   });
@@ -72,5 +72,5 @@ test("get team match data", function (t) {
     t.equal(data[7].score, 21, 'Jammie score');
     t.equal(data[7].teamScore, 3, 'team 2 score Jammie');
     t.end();
-  });  
+  });
 });

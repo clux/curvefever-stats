@@ -1,30 +1,38 @@
 var async = require('async');
-var fs = require('fs');
-
 var scraper = require('./scraper');
-var firstLoadData = require('./scores.json');
 var League = require('./teams');
-var league = new League(firstLoadData.scores, firstLoadData.aliases);
 
-exports.getTop = function (n) {
-  return league.top(n);
+function Curver(cachedObj, saveCb, metricFn) {
+  if (!(this instanceof Curver)) {
+    return new Curver(cachedObj, saveCb, metricFn);
+  }
+  this.league = new League(cachedObj);
+  // TODO: new metricFn needs to wipe this.scores... not ideal
+  // how do we know if we changed the metric?
+  this.metric = function (score) {
+    score = score || 700; // 700 is default for new players
+    return metricFn ? metricFn(score) : score;
+  };
+  var league = this.league;
+  this.saveScores = function () {
+    if (saveCb) {
+      saveCb(league + '');
+    }
+  };
+}
+
+Curver.prototype.getTop = function (n) {
+  return this.league.top(n);
 };
 
-var metric = function (score) {
-  return (score || 700);
-};
-
-var saveScores = function () {
-  fs.writeFile('./scores.json', league + '');
-};
-
-exports.getPlayers = function () {
-  return Object.keys(league.aliases);
+Curver.prototype.getPlayers = function () {
+  return Object.keys(this.league.aliases);
 };
 
 // refresh an array of users in parallel via the scraper
-exports.refresh = function (normalAliases, cb) {
-  var users = league.convert(normalAliases);
+Curver.prototype.refresh = function (normalAliases, cb) {
+  var that = this;
+  var users = that.league.convert(normalAliases);
   var fns = users.map(function (u) {
     return scraper.user.bind(null, u);
   });
@@ -34,32 +42,34 @@ exports.refresh = function (normalAliases, cb) {
     }
     datas.map(function (data) {
       if (data.ffa > 0) {
-        league.score(data.name, metric(data.ffa));
+        that.league.score(data.name, that.metric(data.ffa));
       }
     });
-    saveScores();
+    that.saveScores();
     // NB: cached scores are now the metricified scores
     cb(null, datas.map(function (data) {
       return {
         name: data.name,
-        rank: metric(data.ffa)
+        rank: that.metric(data.ffa)
       };
     }));
   });
 };
 
-exports.addPlayer = function (name, alias) {
-  if (league.aliases[name] !== alias) {
-    league.add(name, alias, metric()); // blank score
-    exports.refresh([name], saveScores); // until refresh finishes
+Curver.prototype.addPlayer = function (name, alias) {
+  if (this.league.aliases[name] !== alias) {
+    this.league.add(name, alias, this.metric()); // blank score
+    this.refresh([name], this.saveScores); // until refresh finishes
   }
 };
 
-exports.removePlayer = function (name) {
-  league.remove(name);
-  saveScores(); // can save immediately
+Curver.prototype.removePlayer = function (name) {
+  this.league.remove(name);
+  this.saveScores(); // can save immediately
 };
 
-exports.fairestMatch = function (normalAliases) {
-  return league.fairestMatch(normalAliases);
-}
+Curver.prototype.fairestMatch = function (normalAliases) {
+  return this.league.fairestMatch(normalAliases);
+};
+
+module.exports = Curver;

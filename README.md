@@ -5,7 +5,7 @@ Curvefever-stats is a stat calculator and match maker library for the [curvefeve
 Use the library programatically:
 
 ```javascript
-var curve = require('curvefever-stats');
+var curve = require('curvefever-stats')(cachedObj || {})
 curve.addPlayer('ea', 'ealbrigt'); // 'ea' == chat name, 'ealbrigt' == curve account name
 curve.refresh(['ea'], function (err, data) {
   if (!err) {
@@ -24,7 +24,6 @@ curve.fairestMatch(['ob', 'ea', 'uu', 'aj']); // a few of my friends' accounts r
 
 ## TODOs
 
-- the curve stats are scraped of "curvefever.com/user/" and cached in `scores.json` - improve
 - no option to use a different metric
 - publish to npm
 

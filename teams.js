@@ -1,11 +1,13 @@
 var $ = require('subset');
 
 // NB: Score numbers are sorted descending, i.e. higher number => higher rank
-function League(scores, aliases) {
-  this.scores = scores;   // { 'gameAlias': Score }
-  this.aliases = aliases; // { 'normalAlias' : 'gameAlias' }
-
-  this.users = Object.keys(this.scores); // only public readable
+function League(cache) {
+  if (!(this instanceof League)) {
+    return new League(cache);
+  }
+  this.scores = cache.scores || {};   // { 'gameAlias': Score }
+  this.aliases = cache.aliases || {}; // { 'normalAlias' : 'gameAlias' }
+  this.users = Object.keys(this.scores); // keys of scores
 }
 
 League.prototype.convert = function (normalAliases) {

@@ -22,18 +22,10 @@ curve.fairestMatch(['ob', 'ea', 'uu', 'aj']); // a few of my friends' accounts r
     diff: 600 } ]
 ```
 
-## TODOs
-
-- no option to use a different metric
-- publish to npm
-
 ## Installation
 
 ```bash
-$ git clone git@github.com:clux/curvefever-stats.git
-$ cd curvefever-stats
-$ npm install
-$ npm start
+$ npm install curvefever-stats
 ```
 
 ## License

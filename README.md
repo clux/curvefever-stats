@@ -1,4 +1,5 @@
-# curvefever-stats [![Build Status](https://secure.travis-ci.org/clux/curvefever-stats.png)](http://travis-ci.org/clux/curvefever-stats)
+# curvefever-stats [![Build Status](https://secure.travis-ci.org/clux/curvefever-stats.png)](http://travis-ci.org/clux/curvefever-stats) [![Dependency Status](https://david-dm.org/clux/curvefever-stats.png)](https://david-dm.org/clux/curvefever-stats)
+
 Curvefever-stats is a stat calculator and match maker library for the [curvefever game](http://curvefever.com).
 
 ## Usage

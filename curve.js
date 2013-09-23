@@ -56,6 +56,24 @@ Curver.prototype.refresh = function (normalAliases, cb) {
   });
 };
 
+Curver.prototype.getLastMatch = function (normalAliases, cb) {
+  if (!normalAliases) {
+    return cb(new Error("no aliases specified"));
+  }
+  var users = this.league.convert(normalAliases);
+  scraper.findLastMatchId(users[0], function (err, id) {
+    if (err) {
+      return cb(err);
+    }
+    scraper.getLastMatch(id, function (err, data) {
+      if (err) {
+        return cb(err);
+      }
+      cb(null, data);
+    });
+  });
+};
+
 Curver.prototype.addPlayer = function (name, alias) {
   if (this.league.aliases[name] !== alias) {
     this.league.add(name, alias, this.metric()); // blank score

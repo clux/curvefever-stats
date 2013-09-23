@@ -51,7 +51,6 @@ exports.getLastMatch = function (id, cb) {
       // sorted by players position in FFA
       // sorted by team, then by individual score within team (if teams)
       var scores = [];
-
       var scoreReg = /(\d*) \((\d*)\)/;
       for (var i = 0; i < stats.length; i += 1) {
         var player = $(stats[i]);

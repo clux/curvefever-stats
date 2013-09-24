@@ -4,7 +4,7 @@ var request = require('request')
 
 exports.user = function (player, cb) {
   request("http://curvefever.com/users/" + player, function (err, resp, body) {
-    if (!err && resp.statusCode === 200) {
+    if (!err && resp && resp.statusCode === 200) {
       var $ = cheerio.load(body);
       var stats = $('.profile dd');
       cb(null, {
@@ -14,7 +14,8 @@ exports.user = function (player, cb) {
       });
     }
     else {
-      cb(new Error("Request for player " + player + " failed: " + resp.statusCode));
+      var code = resp && resp.statusCode;
+      cb(new Error("Request for player " + player + " failed: " + code));
     }
   });
 
@@ -22,7 +23,7 @@ exports.user = function (player, cb) {
 
 exports.findLastMatchId = function (player, cb) {
   request("http://curvefever.com/users/" + player, function (err, resp, body) {
-    if (!err && resp.statusCode === 200) {
+    if (!err && resp && resp.statusCode === 200) {
       var $ = cheerio.load(body);
       var stats = $('.profile dd');
       var lastMatch, id;
@@ -37,14 +38,15 @@ exports.findLastMatchId = function (player, cb) {
       cb(null, id);
     }
     else {
-      cb(new Error("Request for player " + player + " failed: " + resp.statusCode));
+      var code = resp && resp.statusCode;
+      cb(new Error("Request for player " + player + " failed: " + code));
     }
   });
 };
 
 exports.getLastMatch = function (id, cb) {
   request('http://curvefever.com/achtung/match/' + id, function (err, resp, body) {
-    if (!err && resp.statusCode === 200) {
+    if (!err && resp && resp.statusCode === 200) {
       var $ = cheerio.load(body);
       var stats = $('.content').find('table tbody tr');
 
@@ -72,7 +74,8 @@ exports.getLastMatch = function (id, cb) {
       cb(null, scores);
     }
     else {
-      cb(new Error("Request for match " + id + " failed: " + resp.statusCode));
+      var code = resp && resp.statusCode;
+      cb(new Error("Request for match " + id + " failed: " + code));
     }
   });
 };

@@ -39,6 +39,7 @@ test("get ffa match data", function (t) {
     t.equal(data[5].name, 'JOSE-PANDA', 'JOSE-PANDA 6th');
     t.equal(data[5].score, 18, 'JOSE-PANDA score');
     t.equal(data[5].rankChange, '-4', 'JOSE-PANDA rankchange');
+
     t.end();
   });
 });

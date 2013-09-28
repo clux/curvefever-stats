@@ -28,11 +28,11 @@ exports.findLastMatchId = function (player, cb) {
       var stats = $('.profile dd');
       var lastMatch, id;
       try {
-        lastMatch = $(stats[3]).find('tbody tr td a');
+        lastMatch = stats.find('tbody tr td a');
         id = lastMatch.first().attr('href').match(/\match\/(\d*)/)[1] | 0;
       }
       catch (e) {
-        cb(e);
+        cb(new Error('/users/' + player + ' - no matchId found: ' + e.message));
         return;
       }
       cb(null, id);

@@ -6,7 +6,7 @@ function Curver(cachedObj, saveCb, metricFn) {
   if (!(this instanceof Curver)) {
     return new Curver(cachedObj, saveCb, metricFn);
   }
-  this.league = new League(cachedObj);
+  this.league = new League(cachedObj || {});
   // TODO: new metricFn needs to wipe this.scores... not ideal
   // how do we know if we changed the metric?
   this.metric = function (score) {
@@ -69,7 +69,36 @@ Curver.prototype.getLastMatch = function (normalAliases, cb) {
       if (err) {
         return cb(err);
       }
-      cb(null, data);
+      var res = {
+        scores: data,
+        id: id,
+        maxChange: data.slice().sort(function (x, y) {
+          return Math.abs(Number(y.rankChange)) - Math.abs(Number(x.rankChange));
+        })[0]
+      };
+      if (data[0].teamScore) {
+        var getTeam = function (forWinners) {
+          var score = data[forWinners ? 0 : data.length-1].teamScore;
+          var ps = data.filter(function (s) {
+            return s.teamScore === score;
+          });
+          return {
+            score: score,
+            players: ps,
+            names: ps.map(function (s) {
+              return s.name;
+            }),
+            sum: ps.reduce(function (acc, s) {
+              return acc + s.score;
+            }, 0)
+          };
+        };
+        res.teamData = {
+          winners: getTeam(true),
+          losers : getTeam(false)
+        };
+      }
+      cb(null, res);
     });
   });
 };

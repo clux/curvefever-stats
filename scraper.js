@@ -18,7 +18,6 @@ exports.user = function (player, cb) {
       cb(new Error("Request for player " + player + " failed: " + code));
     }
   });
-
 };
 
 exports.findLastMatchId = function (player, cb) {

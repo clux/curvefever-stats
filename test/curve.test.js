@@ -10,12 +10,12 @@ test("curver.getLastMatch", function (t) {
       t.end();
       return;
     }
-    
+
     t.equal(typeof res, 'object', "res is an object");
     t.ok(res.scores.length > 1, "got all results data");
     t.ok(res.scores[0].score > 0, "winner has positive score");
-    t.equal(['+', '-', '0'].indexOf(res.scores[0].rankChange[0]), 0, 'change set');
-    t.equal(['+', '-', '0'].indexOf(res.maxChange.rankChange[0]), 0, 'maxChange set');
+    t.notEqual(['+', '-', '0'].indexOf(res.scores[0].rankChange[0]), -1, 'change set');
+    t.notEqual(['+', '-', '0'].indexOf(res.maxChange.rankChange[0]), -1, 'maxChange set');
     t.ok(res.id > 0, "id is included");
     if (res.teamData) {
       t.ok(res.teamData.winners.score >= 10, "winners won");

@@ -5,9 +5,9 @@
   "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/clux/curvefever-stats.git"
+    "url": "clux/curvefever-stats"
   },
-  "keywords": [],
+  "keywords": ["achtung", "die", "curve"],
   "main": "curve.js",
   "scripts": {
     "test": "tap test/*.js"

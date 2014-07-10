@@ -1,13 +1,11 @@
-var tap = require('tap')
-  , test = tap.test
-  , Curver = require('../')
+var Curver = require('../')
   , curve = new Curver({aliases: {'myNick': 'ealbrigt'}});
 
-test("curver.getLastMatch", function (t) {
+exports.getLastMatch = function (t) {
   curve.getLastMatch(['myNick'], function (err, res) {
     if (err) {
       t.equal(err, null, "fetch last match");
-      t.end();
+      t.done();
       return;
     }
 
@@ -24,6 +22,6 @@ test("curver.getLastMatch", function (t) {
     else {
       t.equal(res.scores[0].teamScore, undefined, "not a team game");
     }
-    t.end();
+    t.done();
   });
-});
+};

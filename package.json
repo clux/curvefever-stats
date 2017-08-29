@@ -1,7 +1,7 @@
 {
   "name": "curvefever-stats",
   "description": "A statistics and match making library for the curvefever game",
-  "author": "Eirik Albrigtsen <analsandblaster@gmail.com>",
+  "author": "Eirik Albrigtsen <sszynrae@gmail.com>",
   "version": "0.1.1",
   "stability": "unstable",
   "repository": {
